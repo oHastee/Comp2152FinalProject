@@ -6,9 +6,7 @@ class Expense:
     def __init__(self, amount: float, category: 'ExpenseCategory', date: str):
         self.__amount = amount
         self.__category = category
-        self.__date = datetime.strptime(date, '%Y-%m-%d')  # Convert date string to datetime object
-        # #datetime.now() Wanted to use datetime.now as its more realistic
-        # But dosent really work for testing purposes
+        self.__date = datetime.strptime(date, '%Y-%m-%d')
 
     def get_amount(self) -> float:
         return self.__amount
