@@ -39,6 +39,6 @@ expense_report2024.expense__records["January"].add_expense(Expense(80, preset_ca
 expense_report2024.expense__records["February"].add_expense(Expense(500, preset_categories["Investments"], "2024-02-20"))
 
 # Print reports
-print(expense_record.calculate_monthly_expenses("January"))
+monthly_report = expense_report2024.generate_monthly_report("January")
+print(monthly_report)
 
-print(expense_report2024.generate_monthly_report("January"))

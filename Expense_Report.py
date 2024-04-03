@@ -14,8 +14,6 @@ class ExpenseReport:
             month_name_str = month_name[month]
             self.expense__records[month_name_str] = ExpenseRecord()
 
-
-
     def generate_monthly_report(self, month):
         monthly_expense_record = self.expense__records[month]
         total_monthly_expense = 0.0
@@ -30,11 +28,13 @@ class ExpenseReport:
             total_expenses_per_category[category_name] += expense.get_amount()
             total_monthly_expense += expense.get_amount()
 
-        print(f"Monthly Report for {month}/{self.__year}:")
-        print("Total Monthly Expense:", total_monthly_expense)
-        print("Total Expenses by Category:")
+        report = f"Monthly Report for {month}/{self.__year}:\n"
+        report += f"Total Monthly Expense: {total_monthly_expense}\n"
+        report += "Total Expenses by Category:\n"
         for category, amount in total_expenses_per_category.items():
-            print(f"{category}: {amount}")
+            report += f"{category}: {amount}\n"
+
+        return report
 
     def generate_yearly_report(self):
         yearly_average = {}
