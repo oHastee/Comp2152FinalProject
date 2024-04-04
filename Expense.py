@@ -19,4 +19,3 @@ class Expense:
 
     def get_category_object(self) -> ExpenseCategory:
         return self.__category
-

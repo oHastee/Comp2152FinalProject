@@ -42,3 +42,5 @@ expense_report2024.expense__records["February"].add_expense(Expense(500, preset_
 monthly_report = expense_report2024.generate_monthly_report("January")
 print(monthly_report)
 
+print(expense_report2023.generate_yearly_report())
+
