@@ -22,7 +22,7 @@ def main():
     expense_record = ExpenseRecord()
 
     def display_menu():
-        print("Expense Tracker Menu:")
+        print("\nExpense Tracker Menu:")
         print("1. Add Expense")
         print("2. View Monthly Expense Report")
         print("3. View Yearly Expense Report")
@@ -39,21 +39,24 @@ def main():
         year = int(input("Enter the year: "))
         month = input("Enter the month (e.g., January, February, etc.): ")
 
-        # Find the expense record for the entered year
-        expense_record = None
-        for report in report_list:
-            if report.get_year() == year:
-                expense_record = report.expense__records.get(month)
-                break
+        # Retrieve the expense record for the entered month and year
+        monthly_expenses = expense_record.calculate_monthly_expenses(month, year)
 
-        if expense_record:
-            # Calculate and display the monthly expenses for the entered month
-            monthly_expenses = expense_record.calculate_monthly_expenses(month)
-            print(f"Monthly expenses for {month}/{year}:")
+        # Check if there are any expenses for the entered month and year
+        if monthly_expenses:
+            # Display the monthly expenses for the entered month and year
+            print(f"\nMonthly expenses for {month}/{year}:")
             for category, amount in monthly_expenses.items():
-                print(f"{category}: {amount}")
+                # Format the amount to always display two decimal places
+                formatted_amount = "{:.2f}".format(amount)
+                print(f"{category}: {formatted_amount}")
+
+            # Calculate and display the total monthly spending
+            total_monthly_spending = expense_record.calculate_total_monthly_spending(month, year)
+            formatted_total_spending = "{:.2f}".format(total_monthly_spending)
+            print(f"\nTotal Monthly Spending: {formatted_total_spending}")
         else:
-            print(f"No expense records found for {month}/{year}.")
+            print(f"No expenses found for {month}/{year}.")
 
     while True:
         display_menu()
@@ -63,8 +66,8 @@ def main():
             add_expense()
         elif choice == '2':
             view_monthly_expenses()
-        #elif choice == '3':
-            #view_yearly_expense_report(expense_report2023)  # Adjust this line for the desired year
+        # elif choice == '3':
+            #
         elif choice == '4':
             print("Exiting...")
             break

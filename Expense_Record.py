@@ -12,17 +12,29 @@ class ExpenseRecord:
     def add_expense(self, expense: Expense):
         self.__expenses.append(expense)
 
-    def calculate_monthly_expenses(self, month: str) -> dict:
+    def calculate_monthly_expenses(self, month: str, year: int) -> dict:
         total_expenses_per_category = defaultdict(float)
         month_lower = month.lower()  # Convert month parameter to lowercase
 
         # Iterate through expenses and accumulate expenses for each category
         for expense in self.__expenses:
-            if expense.get_date().strftime('%B').lower() == month_lower:
+            if expense.get_date().strftime('%B').lower() == month_lower and expense.get_date().year == year:
                 category_name = expense.get_category()  # .get_name() Commented out to work
                 total_expenses_per_category[category_name] += expense.get_amount()
 
         return total_expenses_per_category
+
+    def calculate_total_monthly_spending(self, month: str, year: int) -> float:
+        total_spending = 0.0
+        month_lower = month.lower()  # Convert month parameter to lowercase
+
+        # Iterate through expenses and accumulate total spending for the specified month and year
+        for expense in self.__expenses:
+            if (expense.get_date().strftime('%B').lower() == month_lower and
+                    expense.get_date().year == year):
+                total_spending += expense.get_amount()
+
+        return round(total_spending, 2)
 
     def calculate_yearly_average(self, year: int) -> dict:
         # Dictionary to store total expenses and count of expenses for each category
