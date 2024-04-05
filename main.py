@@ -17,8 +17,7 @@ def main():
         print("\nExpense Tracker Menu:")
         print("1. Add Expense")
         print("2. View Monthly Expense Report")
-        print("3. View Yearly Expense Report")
-        print("4. Exit")
+        print("3. Exit")
 
     def add_expense():
         category_name = input("Enter the expense category: ")  # Assuming category is already defined
@@ -40,9 +39,7 @@ def main():
             add_expense()
         elif choice == '2':
             view_monthly_expenses()
-        # elif choice == '3':
-            #
-        elif choice == '4':
+        elif choice == '3':
             print("Exiting...")
             break
         else:
