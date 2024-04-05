@@ -95,7 +95,10 @@ def main():
                 print("Error: Invalid month. Please enter a valid month.")
 
         try:
-            print(expense_report.generate_monthly_report(month, year))
+            # Generate monthly report
+            monthly_report = expense_report.generate_monthly_report(month, year)
+            print(monthly_report)
+
         except Exception as e:
             print(f"Error generating report: {e}")
 
