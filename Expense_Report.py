@@ -13,8 +13,11 @@ class ExpenseReport:
             self.expense_records[month_name_str] = self.expense_record
 
     def generate_monthly_report(self, month, year):
-        # Retrieve the expense record for the entered month and year
-        monthly_expenses = self.expense_records[month].calculate_monthly_expenses(month, year)
+        try:
+            # Retrieve the expense record for the entered month and year
+            monthly_expenses = self.expense_records[month].calculate_monthly_expenses(month, year)
+        except KeyError as e:
+            return f"Error: Invalid month name provided. {e}"
 
         # Check if there are any expenses for the entered month and year
         if monthly_expenses:
@@ -37,7 +40,10 @@ class ExpenseReport:
                 report += f"Your expense is {comparison} than the yearly average.\n"
 
                 # Calculate the percentage of expenses from the current category out of the total monthly expenses
-                category_percentage = (amount / total_monthly_spending) * 100 if total_monthly_spending != 0 else 0
+                try:
+                    category_percentage = (amount / total_monthly_spending) * 100
+                except ZeroDivisionError:
+                    category_percentage = 0.0
                 report += f"Percentage of {category} expenses: {category_percentage:.2f}%\n"
 
             # Format the total monthly spending to always display two decimal places

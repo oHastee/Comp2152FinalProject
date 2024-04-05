@@ -1,5 +1,6 @@
 from Expense import Expense
 from collections import defaultdict
+from datetime import datetime
 
 
 class ExpenseRecord:
@@ -10,21 +11,33 @@ class ExpenseRecord:
         return self.__expenses
 
     def add_expense(self, expense: Expense):
+        if not isinstance(expense, Expense):
+            raise TypeError("add_expense expects an Expense instance.")
         self.__expenses.append(expense)
 
     def calculate_monthly_expenses(self, month: str, year: int) -> dict:
+        try:
+            year = int(year)
+        except ValueError:
+            raise ValueError("Year must be an integer.")
+
         total_expenses_per_category = defaultdict(float)
         month_lower = month.lower()  # Convert month parameter to lowercase
 
         # Iterate through expenses and accumulate expenses for each category
         for expense in self.__expenses:
             if expense.get_date().strftime('%B').lower() == month_lower and expense.get_date().year == year:
-                category_name = expense.get_category()  # .get_name() Commented out to work
+                category_name = expense.get_category()  # Assuming get_category returns the category name as string
                 total_expenses_per_category[category_name] += expense.get_amount()
 
         return total_expenses_per_category
 
     def calculate_total_monthly_spending(self, month: str, year: int) -> float:
+        try:
+            year = int(year)
+        except ValueError:
+            raise ValueError("Year must be an integer.")
+
         total_spending = 0.0
         month_lower = month.lower()  # Convert month parameter to lowercase
 
@@ -37,13 +50,18 @@ class ExpenseRecord:
         return round(total_spending, 2)
 
     def calculate_yearly_average(self, year: int) -> dict:
+        try:
+            year = int(year)
+        except ValueError:
+            raise ValueError("Year must be an integer.")
+
         # Dictionary to store total expenses and count of expenses for each category
         category_totals = defaultdict(lambda: {'total': 0.0, 'count': 0})
 
         # Iterate through all expenses for the specified year
         for expense in self.__expenses:
             if expense.get_date().year == year:
-                category_name = expense.get_category()  # .get_name() Commented out to work
+                category_name = expense.get_category()  # Assuming get_category returns the category name as string
                 category_totals[category_name]['total'] += expense.get_amount()
                 category_totals[category_name]['count'] += 1
 
