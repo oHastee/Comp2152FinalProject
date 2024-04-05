@@ -1,93 +1,43 @@
 from calendar import month_name
-from collections import defaultdict
 from Expense_Record import ExpenseRecord
 
 class ExpenseReport:
-    def __init__(self, year: int, expense_categories: dict):
-        self.__year = year
-        self.expense_records = {}  # Dictionary to store expense records for each month
+    def __init__(self, expense_record: ExpenseRecord, expense_categories: dict):
+        self.expense_record = expense_record  # Reference to the ExpenseRecord instance
         self.expense_categories = expense_categories  # Dictionary of expense categories
 
         # Initialize expense records for each month of the year
+        self.expense_records = {}
         for month in range(1, 13):
             month_name_str = month_name[month]
-            self.expense_records[month_name_str] = ExpenseRecord()
+            self.expense_records[month_name_str] = self.expense_record
 
-    def get_year(self) -> int:
-        return self.__year
+    def generate_monthly_report(self, month, year):
+        # Retrieve the expense record for the entered month and year
+        monthly_expenses = self.expense_records[month].calculate_monthly_expenses(month, year)
 
-    def generate_monthly_report(self, month):
-        monthly_expense_record = self.expense_records[month]
-        total_monthly_expense = 0.0
-        total_expenses_per_category = defaultdict(float)
+        # Check if there are any expenses for the entered month and year
+        if monthly_expenses:
+            # Display the monthly expenses for the entered month and year
+            report = f"\nMonthly expenses for {month}/{year}:\n"
+            for category, amount in monthly_expenses.items():
+                # Format the amount to always display two decimal places
+                formatted_amount = "{:.2f}".format(amount)
+                report += f"{category}: {formatted_amount}\n"
 
-        # Retrieve expenses for the specified month
-        expenses = monthly_expense_record.get_expenses()
+                # Calculate the yearly average expenses for the current category
+                yearly_average_expenses = self.expense_records[month].calculate_yearly_average(year)
+                yearly_average = yearly_average_expenses.get(category, 0.0)
 
-        # Accumulate expenses for each category and total monthly expense
-        for expense in expenses:
-            category_name = expense.get_category()
-            total_expenses_per_category[category_name] += expense.get_amount()
-            total_monthly_expense += expense.get_amount()
+                # Compare monthly expenses with yearly average and include in the report
+                comparison = "higher" if amount > yearly_average else "lower" if amount < yearly_average else "equal"
+                report += f"\nYearly Average: {yearly_average:.2f}\n"
+                report += f"Your expense is {comparison} than the yearly average.\n"
 
-        # Calculate the average expenses for each category for the entire year
-        yearly_average_expenses = self.calculate_yearly_average()
-
-        report = f"Monthly Report for {month}/{self.__year}:\n"
-        report += f"Total Monthly Expense: {total_monthly_expense}\n"
-        report += "Total Expenses by Category:\n"
-        for category, amount in total_expenses_per_category.items():
-            report += f"{category}: {amount:.2f} ({(amount / total_monthly_expense) * 100:.2f}%)\n"
-            # Calculate if the user's expenses for the month are lower or higher than the annual average
-            average_expense = yearly_average_expenses.get(category, 0.0)
-            comparison = "higher" if amount > average_expense else "lower" if amount < average_expense else "equal"
-            report += f"  - {comparison} than annual average ({average_expense:.2f})\n"
-
-        return report
-
-    def generate_yearly_report(self):
-        yearly_average = {}
-        category_totals = defaultdict(lambda: {'total': 0.0, 'count': 0})
-
-        # Aggregate total expenses and count of expenses for each category across all months
-        for month, record in self.expense_records.items():
-            for category, data in record.calculate_monthly_expenses(month).items():
-                category_totals[category]['total'] += data
-                category_totals[category]['count'] += 1
-
-        # Calculate yearly average expenses for each category
-        yearly_report = f"Yearly Report for {self.__year}:\n"
-        yearly_report += "Average Expenses for Each Category:\n"
-        for category, data in category_totals.items():
-            total_expenses = data['total']
-            expense_count = data['count']
-            yearly_average[category] = round(total_expenses / expense_count, 2) if expense_count > 0 else 0.0
-            yearly_report += f"{category}: {yearly_average[category]}\n"
-
-        return yearly_report
-
-    def compare_monthly_with_yearly(self, month):
-        monthly_expense = self.expense_records[month].calculate_monthly_expenses(month)
-        yearly_average = self.calculate_yearly_average()
-        comparison = "higher" if monthly_expense > yearly_average else "lower" if monthly_expense < yearly_average else "equal"
-
-        comparison_report = f"Comparison of Monthly Expenses for {month}/{self.__year} with Yearly Average:\n"
-        comparison_report += f"Monthly expense is {comparison} than the yearly average."
-
-        return comparison_report
-
-    def calculate_percentage(self, month):
-        total_monthly_expense = self.expense_records[month].calculate_monthly_expenses(month)
-        total_expenses = self.expense_records[month].calculate_monthly_expenses(month)
-
-        percentage_report = f"Percentage of Expenses from Each Category for {month}/{self.__year}:\n"
-        for category, amount in total_expenses.items():
-            percentage = (amount / total_monthly_expense) * 100
-            percentage_report += f"{category}: {percentage:.2f}%\n"
-
-        return percentage_report
-
-    def calculate_yearly_average(self):
-        total_expenses = sum(record.calculate_monthly_expenses(month) for month, record in self.expense_records.items())
-        total_months = sum(1 for _ in self.expense_records)
-        return total_expenses / total_months
+            # Calculate and display the total monthly spending
+            total_monthly_spending = self.expense_records[month].calculate_total_monthly_spending(month, year)
+            formatted_total_spending = "{:.2f}".format(total_monthly_spending)
+            report += f"\nTotal Monthly Spending: {formatted_total_spending}"
+            return report
+        else:
+            return f"No expenses found for {month}/{year}."

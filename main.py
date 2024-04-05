@@ -1,5 +1,3 @@
-# Main function
-from calendar import month_name
 
 from Expense import Expense
 from Expense_Category import ExpenseCategory
@@ -9,17 +7,11 @@ from Preset_Categories import preset_categories
 
 
 def main():
-    # Create an empty list to store expense reports
-    report_list = []
-
-    expense_report2023 = ExpenseReport(2023, preset_categories)
-    expense_report2024 = ExpenseReport(2024, preset_categories)
-
-    report_list.append(expense_report2023)
-    report_list.append(expense_report2024)
-
     # Create an instance of ExpenseRecord
     expense_record = ExpenseRecord()
+
+    # Create an instance of ExpenseReport and pass the expense_record instance to it
+    expense_report = ExpenseReport(expense_record, preset_categories)
 
     def display_menu():
         print("\nExpense Tracker Menu:")
@@ -38,25 +30,7 @@ def main():
     def view_monthly_expenses():
         year = int(input("Enter the year: "))
         month = input("Enter the month (e.g., January, February, etc.): ")
-
-        # Retrieve the expense record for the entered month and year
-        monthly_expenses = expense_record.calculate_monthly_expenses(month, year)
-
-        # Check if there are any expenses for the entered month and year
-        if monthly_expenses:
-            # Display the monthly expenses for the entered month and year
-            print(f"\nMonthly expenses for {month}/{year}:")
-            for category, amount in monthly_expenses.items():
-                # Format the amount to always display two decimal places
-                formatted_amount = "{:.2f}".format(amount)
-                print(f"{category}: {formatted_amount}")
-
-            # Calculate and display the total monthly spending
-            total_monthly_spending = expense_record.calculate_total_monthly_spending(month, year)
-            formatted_total_spending = "{:.2f}".format(total_monthly_spending)
-            print(f"\nTotal Monthly Spending: {formatted_total_spending}")
-        else:
-            print(f"No expenses found for {month}/{year}.")
+        print(expense_report.generate_monthly_report(month,year))
 
     while True:
         display_menu()
